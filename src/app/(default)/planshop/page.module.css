@@ -1,0 +1,45 @@
+.container {
+    color: black;
+    display: flex;
+    width: 100dvw;
+    height: 100dvh;
+    justify-content: center;
+    align-items: center;
+    background: grey;
+}
+
+.movieWrap {
+    width: 550px;
+    height: 780px;
+    border-radius: 15px;
+    background: #fff;
+    padding: 15px 20px;
+    position: relative;
+}
+
+.planTitleHtml {
+    max-width: 100vw;
+    margin-right: -20px;
+    margin-left: -20px;
+}
+
+.divObjWrap {
+    /*width: 800px;*/
+}
+
+.goodsWrap {
+    margin-top: 50px;
+    display: flex;
+}
+
+.cpnImage > img{
+    width: 1000px;
+}
+
+.recentPlanWrap {
+    display: flex;
+}
+
+.recentPlanWrap > a{
+    margin-right: 10px;
+}

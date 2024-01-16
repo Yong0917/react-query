@@ -1,0 +1,43 @@
+.container {
+    width: 100%;
+    height: 550px;
+    padding: 10px;
+    overflow: auto;
+}
+
+.movieWrap {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0;
+    padding-bottom: 10px ;
+    overflow: auto;
+    border-bottom: solid 1px #ccc;
+    cursor: pointer;
+}
+
+.movieNum {
+    display: flex;
+    padding: 5px;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.movieImg img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.movieImg video {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.movieContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
