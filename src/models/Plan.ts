@@ -12,3 +12,8 @@ export interface Plan {
     endDate: string;
     imageList: PlanImage[];
 }
+
+export interface PlanPagingModel {
+    totalCount: number;
+    planInfoList: Plan[]
+}

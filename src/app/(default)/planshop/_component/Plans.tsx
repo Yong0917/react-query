@@ -2,9 +2,9 @@
 
 
 import {useInfiniteQuery} from "@tanstack/react-query";
-import style from "./movieList.module.css"
+import style from "./planList.module.css"
 import BaseLoading from "@/app/(default)/_component/BaseLoading";
-import React, {Fragment, useEffect} from "react";
+import React, {Fragment, useEffect, useMemo} from "react";
 import {useInView} from "react-intersection-observer";
 import Link from "next/link";
 import {getPlansList} from "@/app/(default)/planshop/_lib/getPlansList";
@@ -31,9 +31,12 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
         isFetching, // 쿼리를 가져오고 있는지
     } = useInfiniteQuery({
         queryKey: ['plans', 'list', param],
-        queryFn: getPlansList,
+        queryFn: ({pageParam = 1}) => getPlansList({pageParam : pageParam, queryKey: param}),
         initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages) => lastPage.length > 0 ? allPages.length + 1 : undefined,
+        getNextPageParam: (lastPage, allPages) => {
+            // return lastPage.length === 10 ? allPages.length + 1 : undefined;
+            return lastPage.length > 0 ? allPages.length + 1 : undefined
+        },
         // staleTime: 60 * 1000, // 캐시 유지 타임 / 기본값 0 이며 fresh -> stale / 60 * 1000 = 1분
         // staleTime: Infinity // 항상 fresh 상태 값을 가져오지 않는다
         // gcTime: 300 * 1000 // 삭제 타임 / 기본값 5분 inactve 에서 5분이 지나면 삭제 / staleTime 이 gcTime 보다 무조건 작아야 한다.
@@ -42,22 +45,18 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
         // enabled: // 실행되는 조건
     })
 
-    // const { ref, inView } = useInView({
-    //     threshold: 0, // 하단 태그가 보이고 얼마의 픽셀이 보이고 나서 될건지 0이면 즉시,
-    //     delay: 0, // 태그가 보이고 얼마 후에 실행할건지
-    // })
-
-    // useEffect(() => {
-    //     // if ( inView ) {
-    //     //     !isFetching && hasNextPage && fetchNextPage()
-    //     // }
-    //     if(fetchNextPage){
-    //         !isFetching && hasNextPage && fetchNextPage()
-    //     }
-    // }, [ isFetching, hasNextPage, fetchNextPage])
+    const { ref, inView } = useInView({
+        threshold: 0, // 하단 태그가 보이고 얼마의 픽셀이 보이고 나서 될건지 0이면 즉시,
+        delay: 0, // 태그가 보이고 얼마 후에 실행할건지
+    })
 
 
-    console.log(data)
+    useEffect(() => {
+        if ( inView ) {
+            !isFetching && hasNextPage && fetchNextPage()
+        }
+    }, [ isFetching, hasNextPage, fetchNextPage, inView ])
+
 
     // let domElement
     //
@@ -79,10 +78,11 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
         Trigger Error => 에러 상태 확인 / Restore Error => 원복
     */
 
+    // useMemo(() => {} , [data]);
     // console.log(data)
 
-    console.log('hasNextPage : ' + hasNextPage)
-    console.log('data : ' + data)
+    // console.log('hasNextPage : ' + hasNextPage)
+    console.log('data : ' + data?.pageParams.at(-1))
     return (
         <>
             <div className={ style.container }>
@@ -111,12 +111,16 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
                             </Fragment>
                         ))
                     ) : <div className={ style.container }> 데이터가 존재하지 않습니다.</div> }
-                    {/*<div ref={ref} style={{ height: 5 }} />*/}
-                    <button className={ style.backButton }
-                            hidden={!hasNextPage}
-                            onClick={() => (fetchNextPage())}>
-                        더보기
-                    </button>
+
+                    <div ref={ref} style={{ height: 5 }} />
+                    {/*{hasNextPage ?*/}
+                    {/*    <div style={{textAlign : 'center'}}>*/}
+                    {/*        <button*/}
+                    {/*            className={ style.moreButton }*/}
+                    {/*            onClick={() => (fetchNextPage())}>*/}
+                    {/*            더보기*/}
+                    {/*        </button>*/}
+                    {/*    </div>: null }*/}
                 </>
             </div>
         </>

@@ -1,57 +1,79 @@
 "use client"
 
 
-import {useQuery} from "@tanstack/react-query";
-import style from "./movieList.module.css"
+import {keepPreviousData, useQuery, useQueryClient} from "@tanstack/react-query";
+import style from "./planList.module.css"
 import BaseLoading from "@/app/(default)/_component/BaseLoading";
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Link from "next/link";
-import {Plan} from "@/models/Plan";
+import {Plan, PlanPagingModel} from "@/models/Plan";
 import {PlanSearchParamType} from "@/models/PlanCommon";
 import {getPlanListPaging} from "@/app/(default)/planshop/_lib/getPlansListPaging";
-
+import PaginationCustom from "@/app/(default)/planshop/_component/Pagination";
+import PagingLibrary from "@/app/(default)/planshop/_component/Paging";
 
 export default function PlansPaging({tab, brand, group, sortOption} : PlanSearchParamType) {
 
-    const [currentPage, setCurrentPage] = useState(1); // 현재페이지를 0으로 초기설정
+    const [page, setPage] = useState(1); // 현재페이지를 0으로 초기설정
+
+    // const queryClient = useQueryClient();
 
     let planParam = {
         tab: tab,
         brand: brand,
         group: group,
         sortOption: sortOption,
-        pageParam : currentPage
+        pageParam : page
     }
 
-    const { data, isLoading, isError } = useQuery<Plan[]>({
-        queryKey : ["plans","list", planParam],
+    // const {data, isSuccess, isPlaceholderData,isFetched,isLoading} = useQuery<PlanPagingModel>({
+    //         queryKey: ["plans", "list"],
+    //         queryFn: () => getPlanListPaging(planParam),
+    //         placeholderData: keepPreviousData
+    // })
+
+
+    const {data,isLoading ,isSuccess, isFetched} = useQuery<PlanPagingModel>({
+        queryKey: ["plans", "list"],
         queryFn: () => getPlanListPaging(planParam),
-        staleTime: 300 * 1000
+        placeholderData: keepPreviousData // 기존 데이터 유지하면서 가져옴.
     })
 
-
-    if ( isLoading ) {
-        return <BaseLoading />
-    }
-
-
-    /*
-        ReactDevTools
-        Refetch => 데이터를 다시 불러옴 ( 무조건 )
-        Invalidate => 데이터를 폐기 후 다시 불러옴 ( Observers 있을 때 가져오고 아닌 경우는 Observers 생길 때 가져온다 ( 데이터를 쓰고 있을 떄 가져온다 ) )
-        Reset => 초기 데이터가 있을 경우 초기 데이터를 가져오고 초기 데이터가 없는 경우 Api 호출하여 새로 가져온다 ( 초기 데이터 == initialData )
-
-        Trigger Loading => 로딩 상태 확인 / Restore Loading => 원복
-        Trigger Error => 에러 상태 확인 / Restore Error => 원복
-    */
+    useEffect(() => {       // page 초기화
+        setPage(1)
+    }, [planParam.tab, planParam.brand, planParam.group, planParam.sortOption])
 
 
+    // useEffect(() => {
+    //     queryClient.prefetchQuery({
+    //         queryKey: ["plans", "list"],
+    //         queryFn: () => getPlanListPaging(planParam)
+    //     })
+    // }, [data, isPlaceholderData, planParam])
+
+    // useEffect(() => {
+    //     if (!isPlaceholderData && data?.totalCount) {
+    //         console.log(planParam)
+    //         queryClient.prefetchQuery({
+    //             queryKey: ["plans", "list"],
+    //             queryFn: () => getPlanListPaging(planParam)
+    //         })
+    //     }
+    // }, [data, planParam, isPlaceholderData])
+
+
+    // useEffect(() =>
+    // {
+    //     if(data?.totalCount && data?.totalCount > 0) {
+    //         setTest(data?.totalCount)
     return (
         <>
             <div className={ style.container }>
                 <>
-                    { data?.length && data?.length > 0 ? (
-                        data?.map(( plan : Plan) => (
+                    {/*<button className={ style.backButton }*/}
+                    { !isFetched ? <BaseLoading/> :
+                        data?.totalCount && data?.totalCount > 0 ? (
+                            data?.planInfoList?.map(( plan : Plan) => (
                                 <Link href={`/planshop/${plan.mkdpNo}`} key={ plan.mkdpNo } className={ style.movieWrap } >
                                     <div className={ style.movieNum }>
                                         <h4>{ plan.mkdpNo }</h4>
@@ -69,14 +91,17 @@ export default function PlansPaging({tab, brand, group, sortOption} : PlanSearch
                                     </div>
                                 </Link>
                             ))
-
-                    ) : <div className={ style.container }> 데이터가 존재하지 않습니다.</div> }
-                    <button className={ style.backButton }
-                            onClick={() => setCurrentPage((prev) => prev + 1)}>
-                        더보기
-                    </button>
+                        ) : <div className={ style.container }> 데이터가 존재하지 않습니다.</div>
+                    }
                 </>
+            </div>
+            <div>
+                <PaginationCustom totalPage={data?.totalCount ?? 0} limit={5} page={page} setPage={setPage}/>
+                <PagingLibrary totalPage={data?.totalCount ?? 0} limit={5} page={page} setPage={setPage}/>
             </div>
         </>
     )
+    //     }
+
+    // }, [isSuccess]);
 }

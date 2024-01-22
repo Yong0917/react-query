@@ -32,17 +32,16 @@ export default function PlanSetGoodsTest({mkdpNo, divobjNo, sort} : PlanGoodsPar
         return <BaseLoading />
     }
 
-    // const TemplateComponent = components[planInfo?.tmplFileNm || 'MarketingTemplate1'] || MarketingTemplate1;
-
     // select box
     // 상품 정보
-    if( isSuccess ) {
-        return  (
+
+    return  (
             <>
                 <div className={style.goodsWrap}>
                     {
                         divObjInfo?.map((divObj) => (
                             <Fragment key={ divObj.divobjNo }>
+                                {divObj.divobjNo}
                                 <PlanDivObjGoods divObjGoods={divObj.goodsList}
                                                      divObjKey={divObj.divobjNo}/>
                                 {/*{PlanDivObjGoods(divObj.goodsList, divObj.divobjNo)}*/}
@@ -52,6 +51,6 @@ export default function PlanSetGoodsTest({mkdpNo, divobjNo, sort} : PlanGoodsPar
                 </div>
             </>
 
-        )
-    }
+    )
+
 }

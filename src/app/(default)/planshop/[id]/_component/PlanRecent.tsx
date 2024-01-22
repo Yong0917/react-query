@@ -2,10 +2,13 @@ import React from "react";
 import {Plan} from "@/models/Plan";
 import Link from "next/link";
 
-const PlanRecent = (divObj: Plan[]) => {
+export type PlanRecentType = {
+    plans: Plan[]
+}
+const PlanRecent = ({plans}: PlanRecentType) => {
     return (
         <>
-            { divObj.map(( plan) => (
+            { plans.map(( plan) => (
                 <Link href={`/planshop/${plan.mkdpNo}`} key={ plan.mkdpNo }>
                     <div>
                         { plan.imageList[0].contGbCd === '10' ?

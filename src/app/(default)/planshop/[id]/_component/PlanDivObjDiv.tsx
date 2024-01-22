@@ -1,7 +1,10 @@
 import {PlanDivObjModel} from "@/models/PlanDivObjModel";
 import React from "react";
 
-const PlanDivObjDiv = (divObj : PlanDivObjModel) => {
+export type PlanDivObjType = {
+    divObj: PlanDivObjModel
+}
+const PlanDivObjDiv = ({divObj} : PlanDivObjType) => {
 
     return ({
         '10' : <h3>{ divObj.textDivobjNm }</h3>,

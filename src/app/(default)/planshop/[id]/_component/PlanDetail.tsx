@@ -9,6 +9,7 @@ import getPlanDetail from "@/app/(default)/planshop/[id]/_lib/getPlanDetail";
 import dynamic from "next/dynamic";
 import style from "@/app/_component/backButton.module.css";
 import PlanModal from "@/app/(default)/planshop/[id]/_component/PlanModal";
+import IconsHook from "@/hook/iconsHook";
 
 
 // const components: {[key: string]: any} = {
@@ -23,6 +24,7 @@ export default function PlanDetail({ id } :PlanDetailIdType) {
     const searchParams = useSearchParams();
     const router = useRouter()
 
+    IconsHook();
     const handleClickBtn = () => {
         router.push('/planshop')
     }
@@ -33,10 +35,8 @@ export default function PlanDetail({ id } :PlanDetailIdType) {
 
 
     const { data: planInfo  , isLoading, error ,isSuccess} = useQuery<PlanDetailModel>({
-        queryKey: ['plan', 'detail', paramKey],
-        queryFn: () => getPlanDetail(id),
-        staleTime: 300 * 1000,
-        gcTime: 600 * 1000,
+        queryKey: ['plan', 'detail'],
+        queryFn: () => getPlanDetail(id)
     })
 
 
@@ -61,7 +61,8 @@ export default function PlanDetail({ id } :PlanDetailIdType) {
 
     // const MarketingTemplate1: React.FC<PlanProps> = ({ planInfo }) => {
     if( isSuccess ) {
-        const Template = dynamic<PlanInfoType>(() => import(`@/app/(default)/planshop/[id]/_component/template/${ planInfo?.tmplFileNm || 'MarketingTemplate1'}`), {
+        const Template = dynamic<PlanInfoType>(
+            () => import(`@/app/(default)/planshop/[id]/_component/template/${ planInfo?.tmplFileNm || 'MarketingTemplate1'}`), {
             loading: () => <p>Loading</p>
         })
 

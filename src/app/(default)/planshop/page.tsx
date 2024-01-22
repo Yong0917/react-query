@@ -11,22 +11,22 @@ import {getPlanListPaging} from "@/app/(default)/planshop/_lib/getPlansListPagin
 export default async function PlanShopPage() {
     const queryClient = new QueryClient()
 
-    await queryClient.prefetchQuery({
-        queryKey: ['plans', 'brands'],
-        queryFn: getBrandsList,
-    })
-
-    await queryClient.prefetchQuery({
-        queryKey: ['plans', 'groups'],
-        queryFn: getGroupsList,
-    })
+    // await queryClient.prefetchQuery({
+    //     queryKey: ['plans', 'brands'],
+    //     queryFn: getBrandsList,
+    // })
+    //
+    // await queryClient.prefetchQuery({
+    //     queryKey: ['plans', 'groups'],
+    //     queryFn: getGroupsList,
+    // })
 
     // 무한 스크롤
-    await queryClient.prefetchInfiniteQuery({
-        queryKey: ['plans', 'list', PlanListParam],
-        queryFn: getPlansList,
-        initialPageParam: 1, // 초기 페이지 설정
-    })
+    // await queryClient.prefetchInfiniteQuery({
+    //     queryKey: ['plans', 'list', PlanListParam],
+    //     queryFn: getPlansList,
+    //     initialPageParam: 1, // 초기 페이지 설정
+    // })
     // await queryClient.prefetchQuery({
     //     queryKey: ['plans', 'list', PlanListPagingParam],
     //     queryFn: () => getPlanListPaging(PlanListPagingParam),

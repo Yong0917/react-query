@@ -45,7 +45,7 @@ const MarketingTemplate1 = ({ planInfo } : PlanInfoType ) => {
                         <Fragment key={ divObj.divobjNo }>
                             <div>
                                 {
-                                    PlanDivObjDiv(divObj)
+                                    <PlanDivObjDiv divObj={divObj}/>
                                 }
                             </div>
                             <div className={style.goodsWrap}>
@@ -71,7 +71,7 @@ const MarketingTemplate1 = ({ planInfo } : PlanInfoType ) => {
                 {planInfo.footerContents ? <div dangerouslySetInnerHTML={{__html:planInfo?.footerContents}}></div> : null}
 
                 <div className={style.recentPlanWrap}>
-                    {PlanRecent(recentPlanList)}
+                    {<PlanRecent plans={recentPlanList}/>}
                 </div>
             </div>
         </>

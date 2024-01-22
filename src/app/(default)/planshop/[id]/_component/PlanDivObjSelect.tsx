@@ -6,7 +6,6 @@ export default function PlanDivObjSelect({divObjInfo, setDivobjNo} : PlanDivObjS
 
     const [select, setSelect] = useState<string>('');
 
-
     const onClickGroup = (objNo : string) => {
         setDivobjNo(objNo);
         setSelect(objNo);

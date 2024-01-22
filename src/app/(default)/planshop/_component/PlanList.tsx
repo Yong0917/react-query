@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import PlanSort from "@/app/(default)/planshop/_component/PlanSort";
 import PlanTab from "@/app/(default)/planshop/_component/PlanTab";
 import PlanBrand from "@/app/(default)/planshop/_component/PlanBrand";
@@ -25,6 +25,7 @@ export default function PlanList() {
             <PlanSort sortOption={sortOption} setSortOption={setSortOption}/>
             <Plans tab={tab} brand={brand} group={group} sortOption={sortOption}/>
             {/*<PlansPaging tab={tab} brand={brand} group={group} sortOption={sortOption}/>*/}
+
         </>
     )
 }
