@@ -1,7 +1,7 @@
 "use client"
 
 
-import {useInfiniteQuery} from "@tanstack/react-query";
+import {QueryClient, useInfiniteQuery, useQuery} from "@tanstack/react-query";
 import style from "./planList.module.css"
 import BaseLoading from "@/app/(default)/_component/BaseLoading";
 import React, {Fragment, useEffect, useMemo} from "react";
@@ -20,6 +20,7 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
         sortOption: sortOption
     }
 
+    const queryClient = new QueryClient()
     // <Plan[], Object, InfiniteData<Plan[]>, [_1 :string, _2 :string, param : PlanSearchParamType], number>
     const {
         data,
@@ -31,13 +32,14 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
         isFetching, // 쿼리를 가져오고 있는지
     } = useInfiniteQuery({
         queryKey: ['plans', 'list', param],
-        queryFn: ({pageParam = 1}) => getPlansList({pageParam : pageParam, queryKey: param}),
+        queryFn: ({pageParam}) => getPlansList({pageParam : pageParam, queryKey: param}),
         initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages) => {
-            // return lastPage.length === 10 ? allPages.length + 1 : undefined;
-            return lastPage.length > 0 ? allPages.length + 1 : undefined
+        getNextPageParam: (lastPage, allPages, lastPageParam) => {
+            // return lastPage.length < 0 ? allPages.length + 1 : undefined
+            // console.log(lastPage?.totalCount)
+            return lastPage?.length < 5 ? undefined : lastPageParam + 1;
         },
-        // staleTime: 60 * 1000, // 캐시 유지 타임 / 기본값 0 이며 fresh -> stale / 60 * 1000 = 1분
+        staleTime: 60 * 1000, // 캐시 유지 타임 / 기본값 0 이며 fresh -> stale / 60 * 1000 = 1분
         // staleTime: Infinity // 항상 fresh 상태 값을 가져오지 않는다
         // gcTime: 300 * 1000 // 삭제 타임 / 기본값 5분 inactve 에서 5분이 지나면 삭제 / staleTime 이 gcTime 보다 무조건 작아야 한다.
         // initialData: () => [], // 초기 데이터
@@ -45,17 +47,21 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
         // enabled: // 실행되는 조건
     })
 
-    const { ref, inView } = useInView({
-        threshold: 0, // 하단 태그가 보이고 얼마의 픽셀이 보이고 나서 될건지 0이면 즉시,
-        delay: 0, // 태그가 보이고 얼마 후에 실행할건지
-    })
+    // const { ref, inView } = useInView({
+    //     threshold: 0, // 하단 태그가 보이고 얼마의 픽셀이 보이고 나서 될건지 0이면 즉시,
+    //     delay: 0, // 태그가 보이고 얼마 후에 실행할건지
+    // })
+
+    // useEffect(() => {       // page 초기화
+    //     queryClient.removeQueries({ queryKey: ['plans', 'list', param] });
+    // }, [param.tab, param.brand, param.group, param.sortOption])
 
 
-    useEffect(() => {
-        if ( inView ) {
-            !isFetching && hasNextPage && fetchNextPage()
-        }
-    }, [ isFetching, hasNextPage, fetchNextPage, inView ])
+    // useEffect(() => {
+    //     if ( inView ) {
+    //         !isFetching && hasNextPage && fetchNextPage()
+    //     }
+    // }, [ isFetching, hasNextPage, fetchNextPage, inView ])
 
 
     // let domElement
@@ -81,8 +87,8 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
     // useMemo(() => {} , [data]);
     // console.log(data)
 
-    // console.log('hasNextPage : ' + hasNextPage)
-    console.log('data : ' + data?.pageParams.at(-1))
+    console.log('hasNextPage : ' + hasNextPage)
+    // console.log('data : ' + data?.pageParams.at(-1))
     return (
         <>
             <div className={ style.container }>
@@ -112,15 +118,15 @@ export default function Plans({tab, brand, group, sortOption} : PlanSearchParamT
                         ))
                     ) : <div className={ style.container }> 데이터가 존재하지 않습니다.</div> }
 
-                    <div ref={ref} style={{ height: 5 }} />
-                    {/*{hasNextPage ?*/}
-                    {/*    <div style={{textAlign : 'center'}}>*/}
-                    {/*        <button*/}
-                    {/*            className={ style.moreButton }*/}
-                    {/*            onClick={() => (fetchNextPage())}>*/}
-                    {/*            더보기*/}
-                    {/*        </button>*/}
-                    {/*    </div>: null }*/}
+                    {/*<div ref={ref} style={{ height: 5 }} />*/}
+                    {hasNextPage ?
+                        <div style={{textAlign : 'center'}}>
+                            <button
+                                className={ style.moreButton }
+                                onClick={() => (fetchNextPage())}>
+                                더보기
+                            </button>
+                        </div>: null }
                 </>
             </div>
         </>

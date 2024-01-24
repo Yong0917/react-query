@@ -23,8 +23,8 @@ export default function PlanList() {
             <PlanBrand brand={brand} setBrand={setBrand}/>
             <PlanGroup group={group} setGroup={setGroup}/>
             <PlanSort sortOption={sortOption} setSortOption={setSortOption}/>
-            <Plans tab={tab} brand={brand} group={group} sortOption={sortOption}/>
-            {/*<PlansPaging tab={tab} brand={brand} group={group} sortOption={sortOption}/>*/}
+            {/*<Plans tab={tab} brand={brand} group={group} sortOption={sortOption}/>*/}
+            <PlansPaging tab={tab} brand={brand} group={group} sortOption={sortOption}/>
 
         </>
     )

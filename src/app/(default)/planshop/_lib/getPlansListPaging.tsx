@@ -9,6 +9,8 @@ export async function getPlanListPaging(param: {
     group: string
 })  {
 
+    console.log('pageParama : ' + param.pageParam )
+
     return await axios.get(`${displayUrl}/v1/plan/planList`, {
         params: {
             dispMediaCd : 20,

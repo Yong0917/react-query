@@ -15,8 +15,9 @@ import PagingLibrary from "@/app/(default)/planshop/_component/Paging";
 export default function PlansPaging({tab, brand, group, sortOption} : PlanSearchParamType) {
 
     const [page, setPage] = useState(1); // 현재페이지를 0으로 초기설정
+    const [planInfo, setPlanInfo] = useState<Plan[]>([]);
 
-    // const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
     let planParam = {
         tab: tab,
@@ -33,15 +34,31 @@ export default function PlansPaging({tab, brand, group, sortOption} : PlanSearch
     // })
 
 
-    const {data,isLoading ,isSuccess, isFetched} = useQuery<PlanPagingModel>({
-        queryKey: ["plans", "list"],
+    const {data,isLoading ,isSuccess, isFetched,isPlaceholderData} = useQuery<PlanPagingModel>({
+        queryKey: ["plans", "list", planParam],
         queryFn: () => getPlanListPaging(planParam),
         placeholderData: keepPreviousData // 기존 데이터 유지하면서 가져옴.
     })
 
+
+    console.log(JSON.stringify(data))
+    // console.log(JSON.stringify(data?.planInfoList))
+    // setPlanInfo()
+
     useEffect(() => {       // page 초기화
-        setPage(1)
+        setPage(1);
     }, [planParam.tab, planParam.brand, planParam.group, planParam.sortOption])
+
+    // setCompletePriceData((prevCompletePriceData) => {
+    //     return [...prevCompletePriceData, prItmBaseInfo[index]];
+    // });
+    useEffect(() => {
+        setPlanInfo((planInfo: any) => {
+            return [...planInfo, data];
+        })
+    }, [data])
+
+    // console.log(JSON.stringify(planInfo))
 
 
     // useEffect(() => {
@@ -49,7 +66,7 @@ export default function PlansPaging({tab, brand, group, sortOption} : PlanSearch
     //         queryKey: ["plans", "list"],
     //         queryFn: () => getPlanListPaging(planParam)
     //     })
-    // }, [data, isPlaceholderData, planParam])
+    // }, [data, planParam])
 
     // useEffect(() => {
     //     if (!isPlaceholderData && data?.totalCount) {
@@ -60,7 +77,6 @@ export default function PlansPaging({tab, brand, group, sortOption} : PlanSearch
     //         })
     //     }
     // }, [data, planParam, isPlaceholderData])
-
 
     // useEffect(() =>
     // {
@@ -95,10 +111,18 @@ export default function PlansPaging({tab, brand, group, sortOption} : PlanSearch
                     }
                 </>
             </div>
-            <div>
-                <PaginationCustom totalPage={data?.totalCount ?? 0} limit={5} page={page} setPage={setPage}/>
-                <PagingLibrary totalPage={data?.totalCount ?? 0} limit={5} page={page} setPage={setPage}/>
-            </div>
+            {/*<div>*/}
+            {/*    <PaginationCustom totalPage={data?.totalCount ?? 0} limit={5} page={page} setPage={setPage}/>*/}
+            {/*    <PagingLibrary totalPage={data?.totalCount ?? 0} limit={5} page={page} setPage={setPage}/>*/}
+            {/*</div>*/}
+            {(data?.planInfoList.length && data?.planInfoList.length > 0) && (data?.totalCount > data?.planInfoList.length) ?
+                <div style={{textAlign : 'center'}}>
+                    <button
+                        className={ style.moreButton }
+                        onClick={() => (setPage(page + 1))}>
+                        더보기
+                    </button>
+                </div>: null }
         </>
     )
     //     }

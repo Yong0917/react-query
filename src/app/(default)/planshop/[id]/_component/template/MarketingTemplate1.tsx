@@ -10,6 +10,7 @@ import PlanDivObjGoods from "@/app/(default)/planshop/[id]/_component/PlanDivObj
 import PlanDivObjCoupon from "@/app/(default)/planshop/[id]/_component/PlanDivObjCoupon";
 import PlanRecent from "@/app/(default)/planshop/[id]/_component/PlanRecent";
 import PlanGoodsCollection from "@/app/(default)/planshop/[id]/_component/PlanGoodsCollection";
+import {useRouter} from "next/navigation";
 
 
 const MarketingTemplate1 = ({ planInfo } : PlanInfoType ) => {
@@ -17,6 +18,10 @@ const MarketingTemplate1 = ({ planInfo } : PlanInfoType ) => {
     let planDivObjList: PlanDivObjModel[] = planInfo?.planDivObjList ?? [];
     let recentPlanList: Plan[] = planInfo?.recentPlanList ?? [];
 
+    const router = useRouter()
+    const handleClickBtn = () => {
+        router.push('/planshop')
+    }
 
 //
 //     // console.log(`구분자 테스트 ${JSON.stringify(planDivObjList)}`)
@@ -39,40 +44,52 @@ const MarketingTemplate1 = ({ planInfo } : PlanInfoType ) => {
     return (
         <>
             <div className={style.divObjWrap}>
+                {/*상단HTML영역*/}
                 {planInfo.titleHtml ? <div dangerouslySetInnerHTML={{__html:planInfo?.titleHtml }}></div> : null}
                 <div>
+                    {/*구분자영역*/}
                     { planDivObjList?.map(( divObj ) => (
                         <Fragment key={ divObj.divobjNo }>
                             <div>
+                                <div>구분자(이미지,HTML,TEXT)영역</div>
                                 {
+                                    /*구분자(이미지,HTML,TEXT)*/
                                     <PlanDivObjDiv divObj={divObj}/>
                                 }
                             </div>
                             <div className={style.goodsWrap}>
                                 {
+                                    /*구분자상품*/
                                     <PlanDivObjGoods divObjGoods={divObj.goodsList}
                                                      divObjKey={divObj.divobjNo}/>
                                 }
                             </div>
                             <div className={style.cpnImage}>
+                                <div style={{marginTop:'30px'}}>!!!!!!!!!!!!!!! 쿠폰영역입니다!!!!!!!!!!!!!!</div>
                                 {
+                                    /*구분자쿠폰*/
                                     divObj.cpnDnldYn === 'Y' && !!divObj.cpnNo ? PlanDivObjCoupon(divObj) : null
                                 }
                             </div>
                         </Fragment>
                     ))}
                 </div>
-                 {/*상품모아보기영역 추가 필요*/}
+                 {/*상품모아보기영역*/}
                 <>
                     <PlanGoodsCollection planDivObjInfo={planDivObjList}
                                          mkdpNo={planInfo.mkdpNo}/>
                 </>
 
+                {/*하단HTML영역*/}
                 {planInfo.footerContents ? <div dangerouslySetInnerHTML={{__html:planInfo?.footerContents}}></div> : null}
 
                 <div className={style.recentPlanWrap}>
+                    {/*최근기획전영역*/}
                     {<PlanRecent plans={recentPlanList}/>}
                 </div>
+                <button className={style.planButton} onClick={ handleClickBtn }>
+                    목록
+                </button>
             </div>
         </>
     )

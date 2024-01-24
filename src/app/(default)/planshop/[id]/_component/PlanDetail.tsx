@@ -10,6 +10,8 @@ import dynamic from "next/dynamic";
 import style from "@/app/_component/backButton.module.css";
 import PlanModal from "@/app/(default)/planshop/[id]/_component/PlanModal";
 import IconsHook from "@/hook/iconsHook";
+import React from "react";
+import MarketingTemplate1 from "@/app/(default)/planshop/[id]/_component/template/MarketingTemplate1";
 
 
 // const components: {[key: string]: any} = {
@@ -22,12 +24,7 @@ import IconsHook from "@/hook/iconsHook";
 
 export default function PlanDetail({ id } :PlanDetailIdType) {
     const searchParams = useSearchParams();
-    const router = useRouter()
-
     IconsHook();
-    const handleClickBtn = () => {
-        router.push('/planshop')
-    }
 
     const paramKey = (searchParams.get('previewDate') || searchParams.get('dataLangCd'))
         ? (planDetailParams.setParams(searchParams), planDetailParams)
@@ -35,7 +32,7 @@ export default function PlanDetail({ id } :PlanDetailIdType) {
 
 
     const { data: planInfo  , isLoading, error ,isSuccess} = useQuery<PlanDetailModel>({
-        queryKey: ['plan', 'detail'],
+        queryKey: ['plan', 'detail',id],
         queryFn: () => getPlanDetail(id)
     })
 
@@ -62,19 +59,22 @@ export default function PlanDetail({ id } :PlanDetailIdType) {
     // const MarketingTemplate1: React.FC<PlanProps> = ({ planInfo }) => {
     if( isSuccess ) {
         const Template = dynamic<PlanInfoType>(
-            () => import(`@/app/(default)/planshop/[id]/_component/template/${ planInfo?.tmplFileNm || 'MarketingTemplate1'}`), {
-            loading: () => <p>Loading</p>
+            () => import(`@/app/(default)/planshop/[id]/_component/template/${ planInfo?.tmplFileNm || 'MarketingTemplate1'}`)
+                // eslint-disable-next-line react/display-name
+                .catch(() => () => {
+                    return <div style={{color: 'red'}}>템플릿이 존재하지 않습니다. 관리자에게 문의 부탁드립니다.</div>
+                }), {
+            loading: () => <button className={style.planButton}>Loading...</button>,
+            ssr: false
         })
 
-        return (
+        console.log(Template.displayName)
 
+        return (
             <>
                 {/*기획전 상세 header 영역*/}
                 <Template planInfo={planInfo}/>
                 {/*최신 기획전 영역 (못넣을수도)*/}
-                <button className={style.planButton} onClick={ handleClickBtn }>
-                    목록
-                </button>
             </>
         )
     }

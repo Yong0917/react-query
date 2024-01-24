@@ -14,7 +14,7 @@ export default function PlanGoodsCollection({planDivObjInfo, mkdpNo} : PlanDivOb
     // 상품 정보
     return  (
         <>
-            <div>상품 모아보기 영역 들어갈자리입니다</div>
+            <div>상품 모아보기 영역</div>
             <PlanDivObjSelect divObjInfo={planDivObjInfo} setDivobjNo={setDivobjNo}/>
             <PlanGoodSort sort={sort} setSort={setSort}/>
             <PlanSetGoodsTest mkdpNo={mkdpNo} divobjNo={divobjNo} sort={sort} />

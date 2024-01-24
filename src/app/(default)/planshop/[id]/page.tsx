@@ -23,15 +23,15 @@ export default async function PlanDetailPage({ params } :PlanDetailPageType ) {
     PlanGoodsParam.id = id
 
     const queryClient = new QueryClient()
-    // await queryClient.prefetchQuery({
-    //     queryKey: ['plan', 'detail', id],
-    //     queryFn: () => getPlanDetail(id),
-    // })
+    await queryClient.prefetchQuery({
+        queryKey: ['plan', 'detail', id],
+        queryFn: () => getPlanDetail(id),
+    })
     //
-    // await queryClient.prefetchQuery({
-    //     queryKey: ['plan', 'goods', PlanGoodsParam],
-    //     queryFn: () => getPlanGoods(PlanGoodsParam),
-    // })
+    await queryClient.prefetchQuery({
+        queryKey: ['plan', 'goods', PlanGoodsParam],
+        queryFn: () => getPlanGoods(PlanGoodsParam),
+    })
     //
     // await queryClient.prefetchQuery({
     //     queryKey: ['icon', 'gets'],

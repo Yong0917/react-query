@@ -8,7 +8,7 @@ export default function PlanDivObjGoods({divObjGoods, divObjKey} : PlanGoodsType
     return (
         divObjGoods?.map((good) => (
             <Fragment key={`${divObjKey}_${good.goodsNo}`}>
-                <Link href={`/goodsDetail/${good.goodsNo}`}>
+                <Link href={`/planshop`}>
                     <img src={ `https://img-stg.x2bee.com/${good.goodsRepImgPathNm}` } alt={""} width={200}/>
                     <div>
                         <div>
